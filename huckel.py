@@ -136,7 +136,12 @@ def run_calculation(input_filename:str, output_filename:str='') -> None:
         if len(line.replace('=', ' ').strip().split()) >= 2
     ]
 
+
     cont = dict(keyval_pairs)
+
+    for key in cont.keys():
+        if cont[key] == 'None':
+            del cont[key]
 
     if 'n_atoms' not in cont.keys():
         raise ValueError('Definition of number of atoms is mandatory')
@@ -200,6 +205,9 @@ def print_help() -> None:
     print('    ring = False  ')
     print('    alternate_alpha = None')
     print('    alternate_beta = None\n')
+    print('\n Consider that the input is case sensitive, and will break if')
+    print('keywords are not exacly the same. Also, the values True, False')
+    print('and None must have the first capital letter')
 
 def main(input_file:str, output_file: str = '') -> None:
     run_calculation(input_file, output_file)
