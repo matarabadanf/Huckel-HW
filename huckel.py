@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 from functools import cached_property
+from contextlib import redirect_stdout
 import sys
 from typing import Dict, List, Optional, Tuple
 
@@ -122,7 +123,7 @@ def load_input(input_filename) -> Optional[List[str]]:
     except FileNotFoundError:
         print(f'Error: Input file "{input_filename}" was not found.')
     
-def run_calculation(input_filename, output_filename=None):
+def run_calculation(input_filename:str, output_filename:str='') -> None:
 
     content = load_input(input_filename)
 
@@ -178,8 +179,17 @@ def run_calculation(input_filename, output_filename=None):
     print('\nThe eigenvectos (in columns) of the Huckel matrix are:\n')
     for vec in eigenvec:
         print(' '.join(f'{val:>8.5f}' for val in vec))
-        
     
+    if output_filename == '':
+        output_filename = input_filename
+
+    with open(output_filename + '_eigenvalues', 'w') as f:
+        for eigen in eigenval:
+            f.write(f'{eigen:8.5f}')
+    
+    with open(output_filename + '_eigenvectors', 'w') as f:
+        for vec in eigenvec:
+            f.write(' '.join(f'{val:>8.5f}' for val in vec))
 
 def print_help() -> None:
     print('The usage of this script is the following:')
@@ -191,6 +201,9 @@ def print_help() -> None:
     print('    alternate_alpha = None')
     print('    alternate_beta = None\n')
 
+def main(input_file:str, output_file: str = '') -> None:
+    run_calculation(input_file, output_file)
+
 if __name__ == "__main__":
 
     # Check that an input file is provided
@@ -199,5 +212,12 @@ if __name__ == "__main__":
         exit()
 
     inp_file = sys.argv[1]
-
-    run_calculation(inp_file)
+    print(len(sys.argv))  
+    if len(sys.argv) >= 3:
+        output_file = sys.argv[2]
+        with open(output_file, 'w') as f:
+            with redirect_stdout(f):
+                run_calculation(inp_file, output_file)
+    else:
+        run_calculation(inp_file)
+    
