@@ -204,10 +204,10 @@ def print_help() -> None:
     print('Optional values:')
     print('    ring = False  ')
     print('    alternate_alpha = None')
-    print('    alternate_beta = None\n')
-    print('\n Consider that the input is case sensitive, and will break if')
+    print('    alternate_beta = None')
+    print('\nConsider that the input is case sensitive, and will break if')
     print('keywords are not exacly the same. Also, the values True, False')
-    print('and None must have the first capital letter')
+    print('and None must have the first capital letter.')
 
 def main(input_file:str, output_file: str = '') -> None:
     run_calculation(input_file, output_file)
