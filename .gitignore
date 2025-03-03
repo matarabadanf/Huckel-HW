@@ -13,3 +13,4 @@
 
 # Ignore .vscode folder
 .vscode/
+*pycache*
