@@ -1,0 +1,15 @@
+# Ignore residual TeX files
+*.aux
+*.log
+*.out
+*.toc
+*.bbl
+*.blg
+*.bcf
+*.idx
+*.xml
+*.gz
+
+
+# Ignore .vscode folder
+.vscode/
