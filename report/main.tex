@@ -265,11 +265,13 @@ An advantage of working with classes is that the simplicity to calculate and plo
 And the same with the  \texttt{set\_alpha\_prime()} and \texttt{set\_beta\_minus()} methods. All the scripts to obtain the figures in the next section can be found in the \texttt{plots/} directory. 
 
 \section{Results}
-Having defined the whole framework in the previous class, it is possible to calculate the eigenvalues and eigenvectors of different systems. First, the eigenvalues and eigenvectors of both a chain and a ring of 10 atoms were calculated. The results are shown in Figure \ref{fig:chain_ring}. It is possible to appreciate a clear difference between the two cases, with the ring having a twofold degeneracy in the eigenvalues.
+Having defined the whole framework in the previous class, it is possible to calculate the eigenvalues and eigenvectors of different systems. 
+\subsection{Chain vs Ring}
+First, the eigenvalues and eigenvectors of both a chain and a ring of 10 atoms were calculated. The results are shown in Figure \ref{fig:chain_ring}. It is possible to appreciate a clear difference between the two cases, with the ring having a twofold degeneracy in the eigenvalues.
 
-\begin{figure}[ht]
+\begin{figure}[h]
     \centering
-    \includegraphics[width=0.8\textwidth]{Figures/chain_vs_ring.jpg}
+    \includegraphics[width=0.75\textwidth]{Figures/chain_vs_ring.jpg}
     \caption{Comparison of eigenvalues for a chain and a ring of 10 atoms.}
     \label{fig:chain_ring}
 \end{figure}
@@ -277,8 +279,7 @@ Having defined the whole framework in the previous class, it is possible to calc
 It is possible to appreciate also a big difference in the eigenvector spectrum. The eigenvectors of the first states are shown in Figures \ref{fig:chain_eigenvectors} and \ref{fig:ring_eigenvectors}. There is a notable difference between both cases. While the wave function of the ground state is localized in the central atoms in the chain as in the particle in a box, the wave function of the ring is delocalized over all the atoms. This is a consequence of the periodic boundary conditions of the ring introduced in the Hückel Hamiltonian.
 
 
-
-\begin{figure}[ht]
+\begin{figure}[h]
     \centering
     \begin{minipage}{0.45\textwidth}
         \centering
@@ -295,6 +296,68 @@ It is possible to appreciate also a big difference in the eigenvector spectrum. 
     \end{minipage}
 \end{figure}
 
+It is also possible to determine that int the infinite chain limit the energy of the states converges to the energy of the ring. This is shown in Figure \ref{fig:chain_vs_ring_infinite}.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.75\textwidth]{Figures/convergence_limit.jpg}
+    \caption{Comparison of eigenvalues for a chain and a ring of 100 atoms.}
+    \label{fig:chain_vs_ring_infinite}
+\end{figure}
+
+\subsection{Alternating atoms and distances}
+
+
+
+
+\begin{figure}[h]
+    \centering
+    \begin{minipage}{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{Figures/chain_alpha_eigenvectors.jpg}
+        \caption{Eigenvectors for a chain with alternating $\alpha$ values.}
+        \label{fig:chain_alpha_eigenvectors}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{Figures/ring_alpha_eigenvectors.jpg}
+        \caption{Eigenvectors for a ring with alternating $\alpha$ values.}
+        \label{fig:ring_alpha_eigenvectors}
+    \end{minipage}
+\end{figure}
+
+
+\begin{figure}[h]
+    \centering
+    \begin{minipage}{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{Figures/chain_alpha_eigenvectors.jpg}
+        \caption{Eigenvectors for a chain with alternating $\alpha$ values.}
+        \label{fig:chain_alpha_eigenvectors}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{Figures/ring_alpha_eigenvectors.jpg}
+        \caption{Eigenvectors for a ring with alternating $\alpha$ values.}
+        \label{fig:ring_alpha_eigenvectors}
+    \end{minipage}
+    \vfill
+    \begin{minipage}{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{Figures/chain_beta_eigenvectors.jpg}
+        \caption{Eigenvectors for a chain with alternating $\beta$ values.}
+        \label{fig:chain_beta_eigenvectors}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{Figures/ring_beta_eigenvectors.jpg}
+        \caption{Eigenvectors for a ring with alternating $\beta$ values.}
+        \label{fig:ring_beta_eigenvectors}
+    \end{minipage}
+\end{figure}
 
 % \printbibliography
 
