@@ -34,7 +34,7 @@ class Chain:
         plt.xlabel('Atom') 
         plt.ylabel('$\Psi$')
         plt.legend()
-        plt.show()
+
 
     def plot_eigenvalues(self, comment='') -> None:
         label = 'Chain' if not self._ring else 'Ring'
