@@ -275,9 +275,9 @@ An advantage of working with classes is that the simplicity to calculate and plo
 And the same with the  \texttt{set\_alpha\_prime()} and \texttt{set\_beta\_minus()} methods. All the scripts to obtain the figures in the next section can be found in the \texttt{plots/} directory. 
 
 \section{Results}
-Having defined the whole framework in the previous class, it is possible to calculate the eigenvalues and eigenvectors of different systems. 
+Having defined the whole framework in the previous class, it is possible to calculate the eigenvalues and eigenvectors of different systems. The systems that are simulated are the conjugated $\pi$ systems of chains and rings. 
 \subsection{Chain vs Ring}
-First, the eigenvalues and eigenvectors of both a chain and a ring of 10 atoms were calculated. The results are shown in Figure \ref{fig:chain_ring}. It is possible to appreciate a clear difference between the two cases, with the ring having a twofold degeneracy in the eigenvalues. Eigenvectors of the first states are shown in Figures \ref{fig:chain_eigenvectors} and \ref{fig:ring_eigenvectors}.
+First, the eigenvalues and eigenvectors of both a chain and a ring of 10 atoms were calculated. The results are shown in Figure \ref{fig:chain_ring}. It is possible to appreciate a clear difference between the two cases. The chain system does not present repeated eigenvalues, while the ring presents two-fold degeneracy. This is consistent with MO theory of conjugated rings, where there are degenerated states two by two. 
 
 \begin{figure}[h]
     \centering
@@ -296,8 +296,9 @@ First, the eigenvalues and eigenvectors of both a chain and a ring of 10 atoms w
     \end{minipage}
 \end{figure}
 
-There is a big difference in the eigenvector spectrum. While the wave function of the ground state is localized in the central atoms in the chain as in the particle in a box, the wave function of the ring is delocalized over all the atoms. This is a consequence of the periodic boundary conditions of the ring introduced in the Hückel Hamiltonian. Due to the first and last atoms being connected, the ground state wave function will allow free movement of electrons in the wave function, resulting in a delocalized state.
+Eigenvectors of the first states are shown in Figures \ref{fig:chain_eigenvectors} and \ref{fig:ring_eigenvectors}. There is a significant difference in the eigenvector spectrum. While the wave function of the chain in the ground state is localized in the central atoms in a particle in a box, the wave function of the ring is delocalized over all the atoms. This is a consequence of the periodic boundary conditions of the ring introduced in the Hückel Hamiltonian. Due to the first and last atoms being connected, the ground state wave function will allow free movement of electrons in the wave function, resulting in a delocalized state, again consistent with MO theory of conjugated systems.
 
+The wave function of excited states is also different. In the case of the chain, the wave function behaves as the particle in a box, presenting a number of nodes in the wave function corresponding to the excited state number. On the other hand, the ring presents a slightly different behaviour. Excepting the ground state, the $2n$ and $2n+1$ states present the same eigenfunction, but shifted. Due to the periodic boundary conditions both wave functions behave similarly, which results in the eigenvalue degeneracy. In the case of the ring, the number of nodes of the eigenfunctions will be $2n$ for that pair of eigenfunctions. 
 
 \begin{figure}[h]
     \centering
@@ -316,10 +317,10 @@ There is a big difference in the eigenvector spectrum. While the wave function o
     \end{minipage}
 \end{figure}
 
-Finally, the eigenvalues of the infinite chain/ring limit (considering that a chain/ring of $1000$ atoms converges to said limit) is shown in Figure \ref{fig:chain_vs_ring_infinite}. It is possible to see that, as the ring is so large, the eigenvalues of the ring converge to the eigenvalues of the chain. This can be explained considering that an infinitely big ring will behave in the same way as an infinite chain, due to the periodic boundary conditions only being applied at infinity. 
+Finally, the eigenvalues of the infinite chain/ring limit (considering that a chain/ring of $1000$ atoms converges to said limit) is shown in Figure \ref{fig:chain_vs_ring_infinite}. It is possible to see that, as the ring infinitely large, the eigenvalues of the ring converge to the eigenvalues of the chain. This can be explained considering that an infinitely big ring will behave in the same way as an infinite chain, due to the periodic boundary conditions only being applied at infinity. 
 
 \subsection{Alternating atom distances}
-It is possible to simulate the effect of different alternating atoms distances. We refer to the definition of $\beta$ in equation \ref{eq:alpha_beta_equation}. A higher distance between atoms will result in a smaller value of $\beta$, implying that the stabilization due to the neigbouring atoms will be lower. On the other hand a larger value of beta implies proximity and thus higher stabilization. To test the effect of this, figures \ref{fig:chain_alternating_beta_val} and \ref{fig:ring_alternating_beta_val} show the eigenvalues of a chain and a ring with larger and smaller distances between atoms. Figures \ref{fig:chain_alternating_beta_vec} and \ref{fig:ring_alternating_beta_vec} show the eigenvectors of the first states.
+It is possible to simulate the effect of different alternating atoms distances. We refer to the definition of $\beta$ in equation \ref{eq:alpha_beta_equation}. A higher distance between atoms will result in a smaller value of $\beta$, implying that the stabilization due to the neigbouring atoms will be lower. On the other hand a larger value of beta implies proximity and thus higher stabilization. To test the effect of this, figures \ref{fig:chain_alternating_beta_val} and \ref{fig:ring_alternating_beta_val} show the eigenvalues of a chain and a ring with larger and smaller distances between atoms.
 
 \begin{figure}[h]
     \centering
@@ -338,30 +339,71 @@ It is possible to simulate the effect of different alternating atoms distances. 
     \end{minipage}
 \end{figure}
 
-The first thing that can be noticed is the difference in the eigenvalues. Both the chain and ring with alternating distances present a new band structure, with an energy gap between them. The energy cap can be seen to be symmetrical with respect to $0$, and is the same independently of the different beta value. On the other hand, the energies of the bands up to the gap differ, with the systems with a smaller beta presenting lower ground state energies.
+The first thing that can be noticed is the difference in the eigenvalues. Both the chain and ring with alternating distances present a new band structure with an energy gap between them symmetrical with respect to $0$. This band gap can be associated with the loss of conjugacy generated by the alternating distances. In the case of the linear or ring systems, the whole conjugated $\pi$ system allows free movement of electrons through the whole system, resulting in a gapless conducting system. On the other hand, the differences of distances between neighbours restricts electron movement, resulting in insulation and hence an energy gap between bands. 
 
+On the other hand, the energies of the bands up to the gap differ, with the systems with a smaller beta presenting lower valence band energies. This can be explained due to the Hückel Hamiltonian considering only the stabilization of the $\pi$ system and not the electrostatic repulsion between atoms. Therefore, closer distances will result in stabilizing interactions (lower value of $\beta$) and thus lower ground state energies even though at very small energies the atomic repulsion should increase the energy. 
 
+Also, due to the loss of conjugacy, the two-fold degeneracy of the ring system is lifted, presenting similar eigenvalues for each pair $2n$ and $2n+1$ states, but not exactly the same.
 
 \begin{figure}[h]
     \centering
     \begin{minipage}{0.47\textwidth}
         \centering
-        \includegraphics[width=\textwidth]{Figures/chain_beta_eigenvectors.jpg}
-        \caption{Eigenvectors for a chain with alternating bond distances.}
-        \label{fig:chain_alternating_beta_vec}
+        \includegraphics[width=\textwidth]{Figures/ring_beta_eigenvectors.jpg}
+        \caption{Ground state eigenvectors of a ring with alternating bond distances.}
+        \label{fig:ring_alternating_beta_vec}
     \end{minipage}
     \hfill
     \begin{minipage}{0.47\textwidth}
         \centering
-        \includegraphics[width=\textwidth]{Figures/ring_beta_eigenvectors.jpg}
-        \caption{Eigenvectors for a ring with alternating bond distances.}
-        \label{fig:ring_alternating_beta_vec}
+        \includegraphics[width=\textwidth]{Figures/ring_beta_eigenvectors_2.jpg}
+        \caption{Higher excited state eigenvectors of a ring with alternating bond distances ($\beta = -1.5$).}
+        \label{fig:ring_alternating_beta_vec_2}
     \end{minipage}
 \end{figure}
 
+The loss in conjugacy due to alternating atomic distances does not generate a significant change in the ground or excited states of the chain system. On the other hand, the loss of conjugacy in the ring results in localization as it can be appreciated in Figure \ref{fig:ring_alternating_beta_vec}. This localization is extended to the exited states of the system, as it can be seen in Figure \ref{fig:ring_alternating_beta_vec_2}, where the wave functions are not equal and shifted anymore, which explains the loss of the two-fold degeneracy of the ring.  Also, the ring in this condition behaves quite similarly to the chain, where the number of nodes in the wave function corresponds to the excited state.
 
+\subsection{Alternating atom types}
+The alternating atom types can be simulated with a variation of the $\alpha$ parameter, as each atom type presents a different value. As the reference value of alpha has been set to $0$ due to \textbf{Equation } \ref{eq:alpha_beta_equation}, \textbf{A lower value of alpha (relative to the reference) implies higher stabilization, while a higher one a more unstable interaction }. The alternation of $\alpha$ values will result again in the loss of conjugacy. The eigenvalues of the chains and rings are plotted in Figures \ref{fig:chain_alternating_alpha_val} and \ref{fig:ring_alternating_alpha_val}, while eigenvectors in Figures \ref{fig:chain_alternating_alpha_vec} and \ref{fig:ring_alternating_alpha_vec}.
 
+\begin{figure}[h]
+    \centering
+    \begin{minipage}{0.47\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{Figures/alpha_in_chain.jpg}
+        \caption{Eigenvalues for a chain with alternating atom types.}
+        \label{fig:chain_alternating_alpha_val}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.47\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{Figures/alpha_in_ring.jpg}
+        \caption{Eigenvalues for a ring with alternating atom types.}
+        \label{fig:ring_alternating_alpha_val}
+    \end{minipage}
+\end{figure}
 
+As with the alternating distances, the alternating atom types generate a loss conjugacy and thus a band gap in the energy spectrum. It can be appreciated that in this case the band gap is not the same as in the alternating distance cases, where there gap starts at $E = 0$. 
+
+% due to somethoing something diagonal and non-diagonal terms. diagonal not only generates loss of conjugacy but also shfts the whole spectrum. 
+
+\begin{figure}[h]
+    \centering
+    \begin{minipage}{0.47\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{Figures/chain_alpha_eigenvectors.jpg}
+        \caption{Ground state eigenvectors of a chain with alternating atom types.}
+        \label{fig:chain_alternating_alpha_vec}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.47\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{Figures/ring_alpha_eigenvectors.jpg}
+        \caption{Ground state eigenvectors of a ring with alternating atom types.}
+        \label{fig:ring_alternating_alpha_vec}
+    \end{minipage}
+\end{figure}
 
 % \printbibliography
 
