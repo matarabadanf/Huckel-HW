@@ -38,10 +38,20 @@ sorting=none
 
 
 \section{Theoretical background}
-The focus of this homework is to write a program that is able to obtain the eigenvalues and eigenstates of the Hückel Hamiltonian in carbon chains and rings. The Hückel Hamiltonian allows calculating the energies of conjugated molecules. 
+The focus of this homework is to write a program that is able to obtain the eigenvalues and eigenstates of the Hückel Hamiltonian in carbon chains and rings. The Hückel Hamiltonian allows calculating the energies of conjugated $\pi$ systems. 
 
-The Hückel Hamiltonian is built based on two parameters: $\alpha$ and $\beta$. The parameter $\alpha$ is the energy of an electron in a $2p$ orbital. The $\beta$ parameter represents the energy of stabilization of an electron due to the adjacent atoms. Both $\alpha$ and $\beta$ are negative quantities, as they represent stabilization with respect to a free electron. The Hückel Hamiltonian matrix is built with $\alpha$ as the diagonal terms and $\beta$ in the off-diagonal terms of interacting atoms. A simple example of pentane atoms would be: 
-\begin{equation*}
+The Hückel Hamiltonian is built based on two parameters: $\alpha$ and $\beta$. They are defined as:
+
+\begin{equation} 
+\alpha = -\frac{2}{2r^{2}}
+\,\,\,\,\,\,\,\,\,\,\,\,\,\,
+\beta = -\frac{1}{2r^{2}}
+\end{equation} \label{eq:alpha_beta_equation}
+
+Where $r$ is the distance of the electron with respect to the atom. The parameter $\alpha$ is the energy of an electron in a $2p$ orbital. The $\beta$ parameter represents the energy of stabilization of an electron due to the adjacent atoms. This definition shows that the value of $\alpha$ depends on the atom type, as the size of the $2p$ orbtal will vary with the atom. Also, the value of beta depends on the distance to the neigbouring atoms as it will affect the stabilization. 
+
+Both $\alpha$ and $\beta$ are negative quantities, as they represent stabilization with respect to a free electron. The Hückel Hamiltonian matrix is built with $\alpha$ as the diagonal terms and $\beta$ in the off-diagonal terms of interacting atoms. A simple example of pentane atoms would be: 
+\begin{equation}
     \hat{H}_{\textrm{Hückel}}  =
     \begin{pmatrix}
         \alpha & \beta & 0 & 0 & 0 \\
@@ -50,15 +60,15 @@ The Hückel Hamiltonian is built based on two parameters: $\alpha$ and $\beta$. 
         0 & 0 & \beta & \alpha & \beta \\
         0 & 0 & 0 & \beta & \alpha \\
     \end{pmatrix}
-\end{equation*}
+\end{equation}
     
 Where the first atom is connected to the second, the second to the third and so on. By diagonalizing this Hamiltonian, the energies and wave functions of the system are found:
-\begin{equation*}
+\begin{equation}
     \hat{H}_{\textrm{Hückel}}\ket{\Psi_i}   =  E_{i}\ket{\Psi_i}
-\end{equation*}
+\end{equation}
 
 The Hückel Hamiltonian can also be applied to rings. In this case, this can be done by including the matrix elements that connect the first and last atoms. In the case of cyclopentane it would be: 
-\begin{equation*}
+\begin{equation}
     \hat{H}_{\textrm{Hückel}}  =
     \begin{pmatrix}
         \alpha & \beta & 0 & 0 & \beta \\
@@ -67,10 +77,10 @@ The Hückel Hamiltonian can also be applied to rings. In this case, this can be 
         0 & 0 & \beta & \alpha & \beta \\
         \beta & 0 & 0 & \beta & \alpha \\
     \end{pmatrix}
-\end{equation*}
+\end{equation}
 
 As the quantity of interest is the relative energy difference between states, it is possible to set $\alpha=0$, as this does not affect the relative energy of eigenvalues. When there are different types of atoms, the value of $\alpha$ will not be the same, and thus this must be reflected in the Hamiltonian matrix. An example of a chain of 5 alternating atoms would be:
-\begin{equation*}
+\begin{equation}
     \hat{H}_{\textrm{Hückel}}  =
     \begin{pmatrix}
         \alpha & \beta & 0 & 0 & 0 \\
@@ -79,9 +89,9 @@ As the quantity of interest is the relative energy difference between states, it
         0 & 0 & \beta & \alpha'  & \beta \\
         0 & 0 & 0 & \beta & \alpha \\
     \end{pmatrix}
-\end{equation*}
+\end{equation}
 Where $\alpha$ corresponds to the first atom type and $\alpha'$ to the second. Similarly, the value of $\beta$ depends on the interatomic distance.- Therefore, it is possible to express differences in bond lengths between atoms setting two different values of beta $\beta^+$ and $\beta^-$. In the case of pentadiene: 
-\begin{equation*}
+\begin{equation}
     \hat{H}_{\textrm{Hückel}}  =
     \begin{pmatrix}
         \alpha & \beta^+ & 0 & 0 & 0 \\
@@ -90,7 +100,7 @@ Where $\alpha$ corresponds to the first atom type and $\alpha'$ to the second. S
         0 & 0 & \beta^+ & \alpha & \beta^- \\
         0 & 0 & 0 & \beta^- & \alpha \\
     \end{pmatrix}
-\end{equation*}
+\end{equation}
 Where  $\beta^+$ corresponds to a longer bond distance and $\beta^-$ to a shorter one. 
 
 \section{Program review}
@@ -267,16 +277,26 @@ And the same with the  \texttt{set\_alpha\_prime()} and \texttt{set\_beta\_minus
 \section{Results}
 Having defined the whole framework in the previous class, it is possible to calculate the eigenvalues and eigenvectors of different systems. 
 \subsection{Chain vs Ring}
-First, the eigenvalues and eigenvectors of both a chain and a ring of 10 atoms were calculated. The results are shown in Figure \ref{fig:chain_ring}. It is possible to appreciate a clear difference between the two cases, with the ring having a twofold degeneracy in the eigenvalues.
+First, the eigenvalues and eigenvectors of both a chain and a ring of 10 atoms were calculated. The results are shown in Figure \ref{fig:chain_ring}. It is possible to appreciate a clear difference between the two cases, with the ring having a twofold degeneracy in the eigenvalues. Eigenvectors of the first states are shown in Figures \ref{fig:chain_eigenvectors} and \ref{fig:ring_eigenvectors}.
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.75\textwidth]{Figures/chain_vs_ring.jpg}
-    \caption{Comparison of eigenvalues for a chain and a ring of 10 atoms.}
-    \label{fig:chain_ring}
+    \begin{minipage}{0.47\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{Figures/chain_vs_ring.jpg}
+        \caption{Comparison of eigenvalues for a chain and a ring of 10 atoms.}
+        \label{fig:chain_ring}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.47\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{Figures/convergence_limit.jpg}
+        \caption{Comparison of eigenvalues for a chain and a ring of 100 atoms.}
+        \label{fig:chain_vs_ring_infinite}
+    \end{minipage}
 \end{figure}
 
-It is possible to appreciate also a big difference in the eigenvector spectrum. The eigenvectors of the first states are shown in Figures \ref{fig:chain_eigenvectors} and \ref{fig:ring_eigenvectors}. There is a notable difference between both cases. While the wave function of the ground state is localized in the central atoms in the chain as in the particle in a box, the wave function of the ring is delocalized over all the atoms. This is a consequence of the periodic boundary conditions of the ring introduced in the Hückel Hamiltonian.
+There is a big difference in the eigenvector spectrum. While the wave function of the ground state is localized in the central atoms in the chain as in the particle in a box, the wave function of the ring is delocalized over all the atoms. This is a consequence of the periodic boundary conditions of the ring introduced in the Hückel Hamiltonian. Due to the first and last atoms being connected, the ground state wave function will allow free movement of electrons in the wave function, resulting in a delocalized state.
 
 
 \begin{figure}[h]
@@ -296,14 +316,52 @@ It is possible to appreciate also a big difference in the eigenvector spectrum. 
     \end{minipage}
 \end{figure}
 
-It is also possible to determine that int the infinite chain limit the energy of the states converges to the energy of the ring. This is shown in Figure \ref{fig:chain_vs_ring_infinite}.
+Finally, the eigenvalues of the infinite chain/ring limit (considering that a chain/ring of $1000$ atoms converges to said limit) is shown in Figure \ref{fig:chain_vs_ring_infinite}. It is possible to see that, as the ring is so large, the eigenvalues of the ring converge to the eigenvalues of the chain. This can be explained considering that an infinitely big ring will behave in the same way as an infinite chain, due to the periodic boundary conditions only being applied at infinity. 
+
+\subsection{Alternating atom distances}
+It is possible to simulate the effect of different alternating atoms distances. We refer to the definition of $\beta$ in equation \ref{eq:alpha_beta_equation}. A higher distance between atoms will result in a smaller value of $\beta$, implying that the stabilization due to the neigbouring atoms will be lower. On the other hand a larger value of beta implies proximity and thus higher stabilization. To test the effect of this, figures \ref{fig:chain_alternating_beta_val} and \ref{fig:ring_alternating_beta_val} show the eigenvalues of a chain and a ring with larger and smaller distances between atoms. Figures \ref{fig:chain_alternating_beta_vec} and \ref{fig:ring_alternating_beta_vec} show the eigenvectors of the first states.
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.75\textwidth]{Figures/convergence_limit.jpg}
-    \caption{Comparison of eigenvalues for a chain and a ring of 100 atoms.}
-    \label{fig:chain_vs_ring_infinite}
+    \begin{minipage}{0.47\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{Figures/chain_beta_eigenvaules.jpg}
+        \caption{Eigenvalues for a chain with alternating bond distances.}
+        \label{fig:chain_alternating_beta_val}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.47\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{Figures/ring_beta_eigenvalues.jpg}
+        \caption{Eigenvalues for a ring with alternating bond distances.}
+        \label{fig:ring_alternating_beta_val}
+    \end{minipage}
 \end{figure}
+
+The first thing that can be noticed is the difference in the eigenvalues. Both the chain and ring with alternating distances present a new band structure, with an energy gap between them. The energy cap can be seen to be symmetrical with respect to $0$, and is the same independently of the different beta value. On the other hand, the energies of the bands up to the gap differ, with the systems with a smaller beta presenting lower ground state energies.
+
+
+
+\begin{figure}[h]
+    \centering
+    \begin{minipage}{0.47\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{Figures/chain_beta_eigenvectors.jpg}
+        \caption{Eigenvectors for a chain with alternating bond distances.}
+        \label{fig:chain_alternating_beta_vec}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.47\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{Figures/ring_beta_eigenvectors.jpg}
+        \caption{Eigenvectors for a ring with alternating bond distances.}
+        \label{fig:ring_alternating_beta_vec}
+    \end{minipage}
+\end{figure}
+
+
+
+
 
 % \printbibliography
 

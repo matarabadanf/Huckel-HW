@@ -21,22 +21,22 @@ class Chain:
     #   Public methods
     # ========================================================================
 
-    def plot_eigenvectors(self, n_states) -> None:
+    def plot_eigenvectors(self, state:int , comment:str='') -> None:
 
         label = 'Chain' if not self._ring else 'Ring'
-        if n_states < 5:
+        larger_label = f"State {state} of {label} ({self.n_atoms} atoms)"
+        if comment != '':
+            larger_label = larger_label[:-1] + f', {comment})'
 
-            for i in range(n_states):
-                plt.plot(self.eigen[1][:, i], label=f"State {i} of {label} ({self.n_atoms} atoms)")
-        else:
-            plt.plot(self.eigen[1][:, n_states - 1], label=f"State {i} of {label} ({self.n_atoms} atoms)")
+
+        plt.plot(self.eigen[1][:, state - 1], label=larger_label)
         plt.title('Eigenvector spectrum')
         plt.xlabel('Atom') 
         plt.ylabel('$\Psi$')
         plt.legend()
 
 
-    def plot_eigenvalues(self, comment='') -> None:
+    def plot_eigenvalues(self, comment:str='') -> None:
         label = 'Chain' if not self._ring else 'Ring'
         l = f'{label} of {self.n_atoms} ({comment})' if comment != '' else f'{label} of {self.n_atoms}'
         plt.title('Eigenvalue spectrum')
