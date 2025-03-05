@@ -4,6 +4,7 @@
 \usepackage[margin=25mm]{geometry}
 \usepackage[indent=0mm]{parskip}
 \usepackage{braket}
+\usepackage{amssymb}
 \usepackage[math]{cellspace}
 \usepackage{xcolor} % to access the named colour LightGray
 \definecolor{LightGray}{gray}{0.9}
@@ -38,19 +39,19 @@ sorting=none
 
 
 \section{Theoretical background}
-The focus of this homework is to write a program that is able to obtain the eigenvalues and eigenstates of the Hückel Hamiltonian in carbon chains and rings. The Hückel Hamiltonian allows calculating the energies of conjugated $\pi$ systems. 
+The focus of this homework is to write a program that is able to obtain the eigenvalues and eigenstates of the Hückel Hamiltonian in carbon chains and rings. The Hückel Hamiltonian allows calculating the energies of conjugated $\pi$-systems. 
 
-The Hückel Hamiltonian is built based on two parameters: $\alpha$ and $\beta$. They are defined as:
+Hückel theory is a useful framework to understand aromatic systems and is based in the following approximations:
+\begin{equation}
+    H_{rr}^{eff, \pi} = \alpha
+\end{equation}
+Where $\alpha$ is the Coulombic integral and is determined experimentally. This term is associated with the stabilization resulting from the electron-nucleus interaction with respect to the free electron. To define the interaction of an electron with nearby atoms, another approximation is made: 
+\begin{equation}
+    H_{rs}^{eff, \pi} = \beta,\,0
+\end{equation}
+Where $\beta$ is the resonance integral and also obtained experimentally. Hückel theory considers that a bound electron interacts with neighbouring atoms only. This interaction produces a stabilizing effect on the electron and due to the approximation the effective Hamiltonian between atoms that are not connected is considered $0$. Finally, these parameters show a \(1/r^2\) dependence. This implies that a difference in atom size or interatomic distances will result in different stabilization. 
 
-\begin{equation} 
-\alpha = -\frac{2}{2r^{2}}
-\,\,\,\,\,\,\,\,\,\,\,\,\,\,
-\beta = -\frac{1}{2r^{2}}
-\end{equation} \label{eq:alpha_beta_equation}
-
-Where $r$ is the distance of the electron with respect to the atom. The parameter $\alpha$ is the energy of an electron in a $2p$ orbital. The $\beta$ parameter represents the energy of stabilization of an electron due to the adjacent atoms. This definition shows that the value of $\alpha$ depends on the atom type, as the size of the $2p$ orbtal will vary with the atom. Also, the value of beta depends on the distance to the neigbouring atoms as it will affect the stabilization. 
-
-Both $\alpha$ and $\beta$ are negative quantities, as they represent stabilization with respect to a free electron. The Hückel Hamiltonian matrix is built with $\alpha$ as the diagonal terms and $\beta$ in the off-diagonal terms of interacting atoms. A simple example of pentane atoms would be: 
+The nearest-neighbours interaction is reflected in the  construction of the Hamiltonian matrix. The Hückel Hamiltonian matrix is built with $\alpha$ as the diagonal terms and $\beta$ in the off-diagonal terms of interacting atoms. A simple example of pentane atoms would be: 
 \begin{equation}
     \hat{H}_{\textrm{Hückel}}  =
     \begin{pmatrix}
@@ -104,7 +105,8 @@ Where $\alpha$ corresponds to the first atom type and $\alpha'$ to the second. S
 Where  $\beta^+$ corresponds to a longer bond distance and $\beta^-$ to a shorter one. 
 
 \section{Program review}
-The initial intent was to write the program in FORTRAN, but due to problems with my compiler I could not. When calling a matrix diagonalization using llapack, the eigenvalues and eigenvectors were mismatched. Due to this, the program was rewritten in python, where this problem didn't occur. 
+The initial intent was to write the program in FORTRAN, but due to problems with (probably) my compiler errors arose. When calling a matrix diagonalization using Llapack, the eigenvalues and eigenvectors were mismatched, rendering it impossible to order and plot the different states with the correct energies. Due to this, the program was rewritten in python, while maintaining the core functionality. While the code is written with a class structure, for clarity the code shown here is a simplification. 
+
 \subsection{Code analysis}
 The code is divided in two main parts: a class \texttt{Chain} that handles all the properties related to the Hückel Hamiltonian and a function \texttt{run\_calculation} that handles the general flow of a calculation. The advantage of working with a class is that it is possible to create various instances of these chains or rings and compare results and plot them easily and directly. 
 
@@ -124,28 +126,31 @@ The Hamiltonian is stored as a property. The function considers different cases 
 \begin{itemize}
     \item Alternating bond distances: in order to simulate different bond distances, the value of the \(\beta\) value is modified in the Hamiltonian. In this case, the value of \(\beta^+\) is set always to \(-1\) while the value of \(\beta^-\) can be set to a different value with \texttt{Chain.set\_beta\_minus}. To take into account this alternation of betas, the \texttt{Chain.huckel\_matrix} modifies the Hamiltonian matrix with:
 \begin{lstlisting}[backgroundcolor=\color{LightGray}]
-    for i in range(self.n_atoms - 1):
+    for i in range(n_atoms - 1):
         if i % 2 == 0:
-            huckel_matrix[i + 1, i] = huckel_matrix[i, i + 1] = -1
+            huckel_matrix[i + 1, i] = -1 
+            huckel_matrix[i, i + 1] = -1
         else:
-            huckel_matrix[i + 1, i] = huckel_matrix[i, i + 1] = (
-                self._beta_minus
-            )
+            huckel_matrix[i + 1, i] = beta_minus
+            huckel_matrix[i, i + 1] = beta_minus
 \end{lstlisting} 
     It iterates over the matrix and changes the value of beta when the index is odd. 
     \item Alternating atoms: Similarly to alternating distances, to take into account alternating atoms, it is possible to set a different value to the $\alpha$ value of the diagonal matrix elements with \texttt{Chain.set\_alpha\_prime}. As with the previous property, only the possibility of modifying one of the two $\alpha$ values was considered, and this is reflected in the Hamiltonian matrix with:
 \begin{lstlisting}[backgroundcolor=\color{LightGray}]
-        for i in range(self.n_atoms):
-            if i % 2 == 0:
-                huckel_matrix[i, i] = huckel_matrix[i, i] = 0
-            else:
-                huckel_matrix[i, i] = huckel_matrix[i, i] = self._alpha_prime
+    for i in range(n_atoms):
+        if i % 2 == 0:
+            huckel_matrix[i, i] = 0
+            huckel_matrix[i, i] = 0
+        else:
+            huckel_matrix[i, i] = alpha_prime
+            huckel_matrix[i, i] = alpha_prime
 \end{lstlisting} 
     
     \item Rings: Rings are built by connecting the first and last atoms of a given chain. This is done explicitly as:
 \begin{lstlisting}[backgroundcolor=\color{LightGray}]
-    if self._ring:
-        huckel_matrix[0, self.n_atoms - 1] = huckel_matrix[self.n_atoms - 1, 0] = -1
+    if ring == True:
+        huckel_matrix[0, n_atoms - 1] = -1
+        huckel_matrix[n_atoms - 1, 0] = -1
 \end{lstlisting} 
 The condition of the object being a ring is checked and if so the last values of the first row and column are adjusted accordingly. 
         
@@ -153,18 +158,16 @@ The condition of the object being a ring is checked and if so the last values of
 
 \paragraph{\texttt{Chain.eigen}:} Once the Hamiltonian matrix is built, it can be diagonalized to obtain the eigenvalues and eigenvectors. The Chain.eigen stores as a property the eigenvalues and eigenvectors and calculates it via: 
 \begin{lstlisting}[backgroundcolor=\color{LightGray}]
-    def eigen(self) -> Tuple[np.ndarray, np.ndarray]:
-        self._eigenvalues, self._eigenvectors = np.linalg.eig(
-            self.Huckel_matrix
-        )
+    def eigen():
+        eigenvalues, eigenvectors = np.linalg.eig(Huckel_matrix)
         
         # Sort eigenvalues and eigenvectors
-        idx = np.argsort(self._eigenvalues) # returns the array with sorted indexes
-        sorted_eigenvalues = self._eigenvalues[idx]
-        sorted_eigenvectors = self._eigenvectors[:, idx]
+        idx = np.argsort(eigenvalues) # returns the array with sorted indexes
+        sorted_eigenvalues = eigenvalues[idx]
+        sorted_eigenvectors = eigenvectors[:, idx]
 
-        self._eigenvalues = sorted_eigenvalues
-        self._eigenvectors = sorted_eigenvectors
+        eigenvalues = sorted_eigenvalues
+        eigenvectors = sorted_eigenvectors
 
         return sorted_eigenvalues, sorted_eigenvectors
 \end{lstlisting} 
@@ -188,41 +191,41 @@ The general scheme of any calculation using the program would be:
 This workflow is managed by the \texttt{run\_calculation} function. The input file is read with:
 
 \begin{lstlisting}[backgroundcolor=\color{LightGray}]
-    def run_calculation(input_filename:str, output_filename:str='') -> None:
-        content = load_input(input_filename)
-    
-        if content is None:
-            return
-    
-        keyval_pairs = [ 
-            tuple(line.replace('=', ' ').strip().split()[:2])
-            for line in content 
-            if len(line.replace('=', ' ').strip().split()) >= 2
-        ]
-    
-        cont = dict(keyval_pairs)
-    
-        if 'n_atoms' not in cont.keys():
-            raise ValueError('Definition of number of atoms is mandatory')
+def run_calculation(input_filename, output_filename):
+    content = load_input(input_filename)
+
+    if content is None:
+        return
+
+    keyval_pairs = [ 
+        tuple(line.replace('=', ' ').strip().split()[:2])
+        for line in content 
+        if len(line.replace('=', ' ').strip().split()) >= 2
+    ]
+
+    cont = dict(keyval_pairs)
+
+    if 'n_atoms' not in cont.keys():
+        raise ValueError('Definition of number of atoms is mandatory')
     
 \end{lstlisting} 
 
-The previous code reads all the content in the input file and generates a dictionary of property-value pairs. This way, it is possible to easily build the \texttt{Chain} object with the correct properties. Also, an error is raised if there is no information of the number of atoms of the system. Then the \texttt{Chain} object is created, and the properties modified with:
+The previous code reads all the content in the input file and generates a dictionary of property-value pairs. Therefore, the input keywords can be easily accessed. This way, it is possible to build the \texttt{Chain} object with the correct properties. Also, an error is raised if there is no information of the number of atoms of the system. Then the \texttt{Chain} object is created, and the properties modified with:
 
 \begin{lstlisting}[backgroundcolor=\color{LightGray}]
-        c = Chain(n_atoms=int(cont['n_atoms']))
+    c = Chain(n_atoms=int(cont['n_atoms']))
 
-        if 'ring' in cont.keys():
-            if cont['ring'].capitalize() == 'True':
-                c.close_ring()
-    
-        if 'alternate_alpha' in cont.keys():
-            alt_alpha = float(cont['alternate_alpha'])
-            c.set_alpha_prime(alt_alpha)
-    
-        if 'alternate_beta' in cont.keys():
-            alt_beta = float(cont['alternate_beta'])
-            c.set_beta_minus(alt_beta)
+    if 'ring' in cont.keys():
+        if cont['ring'] == 'True':
+            c.close_ring()
+
+    if 'alternate_alpha' in cont.keys():
+        alt_alpha = float(cont['alternate_alpha'])
+        c.set_alpha_prime(alt_alpha)
+
+    if 'alternate_beta' in cont.keys():
+        alt_beta = float(cont['alternate_beta'])
+        c.set_beta_minus(alt_beta)
 \end{lstlisting} 
 
 Finally, the eigenvalues and eigenvectors are calculated with:
@@ -230,16 +233,7 @@ Finally, the eigenvalues and eigenvectors are calculated with:
         eigenval, eigenvec = c.eigen    
 \end{lstlisting} 
 
-And the results written in the corresponding files with: 
-\begin{lstlisting}[backgroundcolor=\color{LightGray}]
-        with open(output_filename + '_eigenvalues', 'w') as f:
-            for eigen in eigenval:
-                f.write(f'{eigen:8.5f}')
-        
-        with open(output_filename + '_eigenvectors', 'w') as f:
-            for vec in eigenvec:
-                f.write(' '.join(f'{val:>8.5f}' for val in vec))
-\end{lstlisting} 
+And the results written in the corresponding files.
 
 In order to run the program from the terminal line, the \texttt{sys} module is imported, which allows reading the command line arguments. An error is raised if no input file is provided. 
 
@@ -275,9 +269,9 @@ An advantage of working with classes is that the simplicity to calculate and plo
 And the same with the  \texttt{set\_alpha\_prime()} and \texttt{set\_beta\_minus()} methods. All the scripts to obtain the figures in the next section can be found in the \texttt{plots/} directory. 
 
 \section{Results}
-Having defined the whole framework in the previous class, it is possible to calculate the eigenvalues and eigenvectors of different systems. The systems that are simulated are the conjugated $\pi$ systems of chains and rings. 
+Having defined the whole framework in the previous class, it is possible to calculate the eigenvalues and eigenvectors of different systems. The systems that are simulated are the conjugated $\pi$-systems of chains and rings. 
 \subsection{Chain vs Ring}
-First, the eigenvalues and eigenvectors of both a chain and a ring of 10 atoms were calculated. The results are shown in Figure \ref{fig:chain_ring}. It is possible to appreciate a clear difference between the two cases. The chain system does not present repeated eigenvalues, while the ring presents two-fold degeneracy. This is consistent with MO theory of conjugated rings, where there are degenerated states two by two. 
+First, the eigenvalues and eigenvectors of both a chain and a ring of 10 atoms were calculated. The results are shown in Figure \ref{fig:chain_ring}. It is possible to appreciate a clear difference between the two cases. The chain system does not present repeated eigenvalues, while the ring presents two-fold degeneracy. This is consistent with the expected results of Hückel MO theory, where there are degenerated states two by two in rings. 
 
 \begin{figure}[h]
     \centering
@@ -296,9 +290,9 @@ First, the eigenvalues and eigenvectors of both a chain and a ring of 10 atoms w
     \end{minipage}
 \end{figure}
 
-Eigenvectors of the first states are shown in Figures \ref{fig:chain_eigenvectors} and \ref{fig:ring_eigenvectors}. There is a significant difference in the eigenvector spectrum. While the wave function of the chain in the ground state is localized in the central atoms in a particle in a box, the wave function of the ring is delocalized over all the atoms. This is a consequence of the periodic boundary conditions of the ring introduced in the Hückel Hamiltonian. Due to the first and last atoms being connected, the ground state wave function will allow free movement of electrons in the wave function, resulting in a delocalized state, again consistent with MO theory of conjugated systems.
+Eigenvectors of the first states are shown in Figures \ref{fig:chain_eigenvectors} and \ref{fig:ring_eigenvectors}. There is a significant difference in the eigenvector spectrum. While the wave function of the chain in the ground state is localized in the central atoms like a particle in a box, the ring's wave function is delocalized over all the atoms. This is a consequence of the periodic boundary conditions (PBC) introduced. In the ring, electron movement can be looped, resulting in a delocalized state.
 
-The wave function of excited states is also different. In the case of the chain, the wave function behaves as the particle in a box, presenting a number of nodes in the wave function corresponding to the excited state number. On the other hand, the ring presents a slightly different behaviour. Excepting the ground state, the $2n$ and $2n+1$ states present the same eigenfunction, but shifted. Due to the periodic boundary conditions both wave functions behave similarly, which results in the eigenvalue degeneracy. In the case of the ring, the number of nodes of the eigenfunctions will be $2n$ for that pair of eigenfunctions. 
+The wave function of excited states is also different. In the case of the chain, the wave function behaves as a particle in a box, presenting a number of nodes in the wave function corresponding to the excited state. In contrast, the ring presents a slightly different behaviour. Excepting the ground state, the $2n$ and $2n+1$ states present the same eigenfunction, but shifted. Due to the PBC imposed, both wave functions behave similarly, which results in the eigenvalue degeneracy. In the case of the ring, the number of nodes of will be $2n$ for that pair of eigenfunctions. 
 
 \begin{figure}[h]
     \centering
@@ -317,10 +311,10 @@ The wave function of excited states is also different. In the case of the chain,
     \end{minipage}
 \end{figure}
 
-Finally, the eigenvalues of the infinite chain/ring limit (considering that a chain/ring of $1000$ atoms converges to said limit) is shown in Figure \ref{fig:chain_vs_ring_infinite}. It is possible to see that, as the ring infinitely large, the eigenvalues of the ring converge to the eigenvalues of the chain. This can be explained considering that an infinitely big ring will behave in the same way as an infinite chain, due to the periodic boundary conditions only being applied at infinity. 
+Finally, the eigenvalues of the infinite chain/ring limit, considering that a chain/ring of $1000$ atoms converges to said limit, were calculated (Figure \ref{fig:chain_vs_ring_infinite}). It is possible to see that, as the ring infinitely large, the eigenvalues of the ring converge to the eigenvalues of the chain. This can be explained considering that an infinitely big ring will behave in the same way as an infinite chain, due to PBC only being applied at infinity. 
 
 \subsection{Alternating atom distances}
-It is possible to simulate the effect of different alternating atoms distances. We refer to the definition of $\beta$ in equation \ref{eq:alpha_beta_equation}. A higher distance between atoms will result in a smaller value of $\beta$, implying that the stabilization due to the neigbouring atoms will be lower. On the other hand a larger value of beta implies proximity and thus higher stabilization. To test the effect of this, figures \ref{fig:chain_alternating_beta_val} and \ref{fig:ring_alternating_beta_val} show the eigenvalues of a chain and a ring with larger and smaller distances between atoms.
+It is possible to simulate the effect of different alternating atoms distances. Due to the $1/r^2$ dependency of $\beta$, a higher distance between atoms will result in a smaller value of $\beta$, implying that the stabilization due to the neighbouring atoms will be lowered. Conversely, a larger value of $\beta$ implies proximity and thus higher stabilization. To test the effect of this, figures \ref{fig:chain_alternating_beta_val} and \ref{fig:ring_alternating_beta_val} show the eigenvalues of a chain and a ring with larger and smaller distances between atoms.
 
 \begin{figure}[h]
     \centering
@@ -339,11 +333,11 @@ It is possible to simulate the effect of different alternating atoms distances. 
     \end{minipage}
 \end{figure}
 
-The first thing that can be noticed is the difference in the eigenvalues. Both the chain and ring with alternating distances present a new band structure with an energy gap between them symmetrical with respect to $0$. This band gap can be associated with the loss of conjugacy generated by the alternating distances. In the case of the linear or ring systems, the whole conjugated $\pi$ system allows free movement of electrons through the whole system, resulting in a gapless conducting system. On the other hand, the differences of distances between neighbours restricts electron movement, resulting in insulation and hence an energy gap between bands. 
+The first thing that can be noticed is the difference in the eigenvalues. Both the chain and ring with alternating distances present a new band structure with an energy gap between them centred at $0$. This band gap can be associated with the loss of conjugacy generated by the alternating distances. In the case of the linear or ring systems, the whole conjugated $\pi$-system allows free movement of electrons through the whole system, resulting in a gapless conducting system. Therefore, the differences of distances between neighbours restricts electron movement, resulting in insulation and hence an energy gap between bands. 
 
-On the other hand, the energies of the bands up to the gap differ, with the systems with a smaller beta presenting lower valence band energies. This can be explained due to the Hückel Hamiltonian considering only the stabilization of the $\pi$ system and not the electrostatic repulsion between atoms. Therefore, closer distances will result in stabilizing interactions (lower value of $\beta$) and thus lower ground state energies even though at very small energies the atomic repulsion should increase the energy. 
+On the other hand, the energies of the bands up to the gap differ, with the systems with a smaller beta presenting lower valence band energies. This can be explained due to the Hückel Hamiltonian considering the stabilization of the $\pi$-system. Therefore, closer distances will result in stabilizing interactions (lower value of $\beta$) and thus lower ground state energies. 
 
-Also, due to the loss of conjugacy, the two-fold degeneracy of the ring system is lifted, presenting similar eigenvalues for each pair $2n$ and $2n+1$ states, but not exactly the same.
+Also, due to the loss of conjugacy, the two-fold degeneracy of the ring system is lifted (Figure \ref{fig:ring_alternating_beta_val}), presenting similar eigenvalues for each pair $2n$ and $2n+1$ states, but not exactly the same.
 
 \begin{figure}[h]
     \centering
@@ -362,10 +356,12 @@ Also, due to the loss of conjugacy, the two-fold degeneracy of the ring system i
     \end{minipage}
 \end{figure}
 
-The loss in conjugacy due to alternating atomic distances does not generate a significant change in the ground or excited states of the chain system. On the other hand, the loss of conjugacy in the ring results in localization as it can be appreciated in Figure \ref{fig:ring_alternating_beta_vec}. This localization is extended to the exited states of the system, as it can be seen in Figure \ref{fig:ring_alternating_beta_vec_2}, where the wave functions are not equal and shifted anymore, which explains the loss of the two-fold degeneracy of the ring.  Also, the ring in this condition behaves quite similarly to the chain, where the number of nodes in the wave function corresponds to the excited state.
+The loss in conjugacy due to alternating atomic distances does not generate a significant change in the eigenstates of the chain system. In contrast, the ring wave functions are localized (Figure \ref{fig:ring_alternating_beta_vec}). This localization is extended to the exited states of the system (Figure \ref{fig:ring_alternating_beta_vec_2}), where the wave functions are not the same e shifted by a phase factor, which explains the loss of the two-fold degeneracy of the ring.  Also, the ring in this condition behaves similarly to the chain, where the number of nodes in the wave function corresponds to the excited state.
+
+Mathematically, this whole behaviour can be explained with the Hamiltonian construction and diagonalization. In this case, the diagonal terms are constant, but due to the off-diagonal coupling alternating, when diagonalizing the hamiltonian, the eigenvalues impose a perturbation, lifting possible degeneracies (in the case of the ring) and generating a gap in the eigenvalue spectrum. Due to the diagonal contribution of alpha, it is possible to separate the Hamiltonian as $H_{eff}^{\alpha\beta} = \mathbb{I} \alpha + H_{eff}^\beta$, which implies that the fermi level will reman at $\alpha$ energy. 
 
 \subsection{Alternating atom types}
-The alternating atom types can be simulated with a variation of the $\alpha$ parameter, as each atom type presents a different value. As the reference value of alpha has been set to $0$ due to \textbf{Equation } \ref{eq:alpha_beta_equation}, \textbf{A lower value of alpha (relative to the reference) implies higher stabilization, while a higher one a more unstable interaction }. The alternation of $\alpha$ values will result again in the loss of conjugacy. The eigenvalues of the chains and rings are plotted in Figures \ref{fig:chain_alternating_alpha_val} and \ref{fig:ring_alternating_alpha_val}, while eigenvectors in Figures \ref{fig:chain_alternating_alpha_vec} and \ref{fig:ring_alternating_alpha_vec}.
+The alternating atom types can be simulated with a variation of the $\alpha$ parameter, as each atom type presents a different value. As the reference value of alpha has been set to $0$, a negative value of alpha implies higher stabilization, while a positive one destabilization. The alternation of $\alpha$ values will result again in the loss of conjugacy. The eigenvalues of the chains and rings are plotted in Figures \ref{fig:chain_alternating_alpha_val} and \ref{fig:ring_alternating_alpha_val}, while eigenvectors in Figures \ref{fig:chain_alternating_alpha_vec} and \ref{fig:ring_alternating_alpha_vec}.
 
 \begin{figure}[h]
     \centering
@@ -384,11 +380,11 @@ The alternating atom types can be simulated with a variation of the $\alpha$ par
     \end{minipage}
 \end{figure}
 
-As with the alternating distances, the alternating atom types generate a loss conjugacy and thus a band gap in the energy spectrum. It can be appreciated that in this case the band gap is not the same as in the alternating distance cases, where there gap starts at $E = 0$. 
+Again a band gap is found in the energy spectrum, but with a significant change with respect to the previous section, as the Fermi level does not remain at $0$, but is shifted. In Figure \ref{fig:ring_alternating_alpha_val} it is possible that the same value of $\alpha'$ in absolute value results in the same eigenvalue spectrum, but shifted to higher or lower energies depending on the sign. 
 
-% due to somethoing something diagonal and non-diagonal terms. diagonal not only generates loss of conjugacy but also shfts the whole spectrum. 
+This different behaviour can be explained with the Hamiltonian construction. In the base case, the diagonal term is $0$ in all cases, resulting in all eigenvalues being $0 \pm N_i$, the non-diagonal coupling. In the case where the diagonal terms are modified alternating, the eigenvalues can only be  $\alpha-N_i$ or $\alpha'+N_i$ (assuming $\alpha < \alpha'$). This results in the appearance of the gap and the Fermi level being located at $\frac{\alpha + \alpha'}{2}$, shifting the whole eigenvalue spectrum. Also, due to the way the Hamiltonian is constructed in this case, there is no perturbation and therefore the ring eigenvalues will remain two-fold degenerate. 
 
-\begin{figure}[h]
+\begin{figure}[!h]
     \centering
     \begin{minipage}{0.47\textwidth}
         \centering
@@ -404,6 +400,17 @@ As with the alternating distances, the alternating atom types generate a loss co
         \label{fig:ring_alternating_alpha_vec}
     \end{minipage}
 \end{figure}
+
+The eigenvector spectrum is identical in shape to the base case, with the exception that there is an oscillation in probability between alternating atoms. This is due to the relative difference in binding energy between the different atoms, where the probability of being bound to an atom will increase if the binding energy is lower. 
+
+\section{Conclusions}
+In this report, a program to calculate the eigenvalues and eigenvectors of the Hückel Hamiltonian for carbon chains and rings was implemented. The program allows for the simulation of different scenarios, including alternating bond distances and alternating atom types. All the results are in agreement with Hückel MO theory, implying a correct implementation in the program. 
+
+Chains and rings were proven to exhibit different eigenvalues and eigenvector spectra, with rings showing two-fold degeneracy due to PBC. The behaviour of both was proven to converge at the infinite length limit. 
+
+Due to the nature of the Hamiltonian, a change in either bond distances or bond types result in a loss of conjugacy and therefore the appearance of a gap in the band structure. A change in distances results in the modification of the eigenvalue spectrum generating a symmetric band gap centred around the zero energy level and breaking degeneracy in the ring. In contrast, the modification of atom types not only generates a band gap, but shifts the energy of the fermi level while maintaining the degeneracy in the ring. 
+
+The wave function is also modified by these changes. Different atomic distances results in a wave function localization within the chain or ring structure, and thus a loss of degeneracy in the ring, whereas a change in atom types results in localization on certain atoms, maintaining degenerate states in the ring system. 
 
 % \printbibliography
 
