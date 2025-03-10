@@ -9,7 +9,7 @@
 *.idx
 *.xml
 *.gz
-
+*ML*
 
 # Ignore .vscode folder
 .vscode/

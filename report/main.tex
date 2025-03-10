@@ -45,11 +45,11 @@ Hückel theory is a useful framework to understand aromatic systems and is based
 \begin{equation}
     H_{rr}^{eff, \pi} = \alpha
 \end{equation}
-Where $\alpha$ is the Coulombic integral and is determined experimentally. This term is associated with the stabilization resulting from the electron-nucleus interaction with respect to the free electron. To define the interaction of an electron with nearby atoms, another approximation is made: 
+Where $\alpha$ is the Coulombic integral and is determined experimentally.\cite{bishop1993group} This term is associated with the stabilization resulting from the electron-nucleus interaction with respect to the free electron. To define the interaction of an electron with nearby atoms, another approximation is made: 
 \begin{equation}
     H_{rs}^{eff, \pi} = \beta,\,0
 \end{equation}
-Where $\beta$ is the resonance integral and also obtained experimentally. Hückel theory considers that a bound electron interacts with neighbouring atoms only. This interaction produces a stabilizing effect on the electron and due to the approximation the effective Hamiltonian between atoms that are not connected is considered $0$. Finally, these parameters show a \(1/r^2\) dependence. This implies that a difference in atom size or interatomic distances will result in different stabilization. 
+Where $\beta$ is the resonance integral and also obtained experimentally.\cite{bishop1993group} Hückel theory considers that a bound electron interacts with neighbouring atoms only. This interaction produces a stabilizing effect on the electron and due to the approximation the effective Hamiltonian between atoms that are not connected is considered $0$. Finally, these parameters show a \(1/r^2\) dependence. This implies that a difference in atom size or interatomic distances will result in different stabilization. 
 
 The nearest-neighbours interaction is reflected in the  construction of the Hamiltonian matrix. The Hückel Hamiltonian matrix is built with $\alpha$ as the diagonal terms and $\beta$ in the off-diagonal terms of interacting atoms. A simple example of pentane atoms would be: 
 \begin{equation}
@@ -159,7 +159,7 @@ The condition of the object being a ring is checked and if so the last values of
 \paragraph{\texttt{Chain.eigen}:} Once the Hamiltonian matrix is built, it can be diagonalized to obtain the eigenvalues and eigenvectors. The Chain.eigen stores as a property the eigenvalues and eigenvectors and calculates it via: 
 \begin{lstlisting}[backgroundcolor=\color{LightGray}]
     def eigen():
-        eigenvalues, eigenvectors = np.linalg.eig(Huckel_matrix)
+        eigenvalues, eigenvectors = np.linalg.eig(huckel_matrix)
         
         # Sort eigenvalues and eigenvectors
         idx = np.argsort(eigenvalues) # returns the array with sorted indexes
@@ -270,10 +270,11 @@ And the same with the  \texttt{set\_alpha\_prime()} and \texttt{set\_beta\_minus
 
 \section{Results}
 Having defined the whole framework in the previous class, it is possible to calculate the eigenvalues and eigenvectors of different systems. The systems that are simulated are the conjugated $\pi$-systems of chains and rings. 
+
 \subsection{Chain vs Ring}
 First, the eigenvalues and eigenvectors of both a chain and a ring of 10 atoms were calculated. The results are shown in Figure \ref{fig:chain_ring}. It is possible to appreciate a clear difference between the two cases. The chain system does not present repeated eigenvalues, while the ring presents two-fold degeneracy. This is consistent with the expected results of Hückel MO theory, where there are degenerated states two by two in rings. 
 
-\begin{figure}[h]
+\begin{figure}[ht]
     \centering
     \begin{minipage}{0.47\textwidth}
         \centering
@@ -285,7 +286,7 @@ First, the eigenvalues and eigenvectors of both a chain and a ring of 10 atoms w
     \begin{minipage}{0.47\textwidth}
         \centering
         \includegraphics[width=\textwidth]{Figures/convergence_limit.jpg}
-        \caption{Comparison of eigenvalues for a chain and a ring of 100 atoms.}
+        \caption{Comparison of eigenvalues for a chain and a ring of 1000 atoms.}
         \label{fig:chain_vs_ring_infinite}
     \end{minipage}
 \end{figure}
@@ -294,7 +295,7 @@ Eigenvectors of the first states are shown in Figures \ref{fig:chain_eigenvector
 
 The wave function of excited states is also different. In the case of the chain, the wave function behaves as a particle in a box, presenting a number of nodes in the wave function corresponding to the excited state. In contrast, the ring presents a slightly different behaviour. Excepting the ground state, the $2n$ and $2n+1$ states present the same eigenfunction, but shifted. Due to the PBC imposed, both wave functions behave similarly, which results in the eigenvalue degeneracy. In the case of the ring, the number of nodes of will be $2n$ for that pair of eigenfunctions. 
 
-\begin{figure}[h]
+\begin{figure}[ht]
     \centering
     \begin{minipage}{0.45\textwidth}
         \centering
@@ -311,12 +312,14 @@ The wave function of excited states is also different. In the case of the chain,
     \end{minipage}
 \end{figure}
 
-Finally, the eigenvalues of the infinite chain/ring limit, considering that a chain/ring of $1000$ atoms converges to said limit, were calculated (Figure \ref{fig:chain_vs_ring_infinite}). It is possible to see that, as the ring infinitely large, the eigenvalues of the ring converge to the eigenvalues of the chain. This can be explained considering that an infinitely big ring will behave in the same way as an infinite chain, due to PBC only being applied at infinity. 
+Finally, it is possible to appreciate the difference in the eigenvalue spectrum as the length of the systems increase. In the smaller systems, the different states can be seen to be discretely separated. However, as the number of atoms increases, the eigenvalues of the chain and ring converge to a band structure. 
+
+To study the infinite chain/ring limit, a calculation of a chain and ring of $1000$ atoms was calculated (Figure \ref{fig:chain_vs_ring_infinite}). It is possible to see that, as the ring infinitely large, the band shape of the ring converges to the of the chain band structure. This can be explained considering that even though there is degeneracy, an infinitely large ring will have infinitesimally separated eigenvalues in this limit, the same as the chain. 
 
 \subsection{Alternating atom distances}
 It is possible to simulate the effect of different alternating atoms distances. Due to the $1/r^2$ dependency of $\beta$, a higher distance between atoms will result in a smaller value of $\beta$, implying that the stabilization due to the neighbouring atoms will be lowered. Conversely, a larger value of $\beta$ implies proximity and thus higher stabilization. To test the effect of this, figures \ref{fig:chain_alternating_beta_val} and \ref{fig:ring_alternating_beta_val} show the eigenvalues of a chain and a ring with larger and smaller distances between atoms.
 
-\begin{figure}[h]
+\begin{figure}[ht]
     \centering
     \begin{minipage}{0.47\textwidth}
         \centering
@@ -335,11 +338,11 @@ It is possible to simulate the effect of different alternating atoms distances. 
 
 The first thing that can be noticed is the difference in the eigenvalues. Both the chain and ring with alternating distances present a new band structure with an energy gap between them centred at $0$. This band gap can be associated with the loss of conjugacy generated by the alternating distances. In the case of the linear or ring systems, the whole conjugated $\pi$-system allows free movement of electrons through the whole system, resulting in a gapless conducting system. Therefore, the differences of distances between neighbours restricts electron movement, resulting in insulation and hence an energy gap between bands. 
 
-On the other hand, the energies of the bands up to the gap differ, with the systems with a smaller beta presenting lower valence band energies. This can be explained due to the Hückel Hamiltonian considering the stabilization of the $\pi$-system. Therefore, closer distances will result in stabilizing interactions (lower value of $\beta$) and thus lower ground state energies. 
+On the other hand, the energies of the bands up to the gap differ, with the systems with a smaller (less negative) beta presenting lower valence band energies. This can be explained due to the Hückel Hamiltonian considering the stabilization of the $\pi$-system. Therefore, closer distances will result in stabilizing interactions (more negative $\beta$) and thus lower ground state energies. 
 
 Also, due to the loss of conjugacy, the two-fold degeneracy of the ring system is lifted (Figure \ref{fig:ring_alternating_beta_val}), presenting similar eigenvalues for each pair $2n$ and $2n+1$ states, but not exactly the same.
 
-\begin{figure}[h]
+\begin{figure}[ht]
     \centering
     \begin{minipage}{0.47\textwidth}
         \centering
@@ -363,7 +366,7 @@ Mathematically, this whole behaviour can be explained with the Hamiltonian const
 \subsection{Alternating atom types}
 The alternating atom types can be simulated with a variation of the $\alpha$ parameter, as each atom type presents a different value. As the reference value of alpha has been set to $0$, a negative value of alpha implies higher stabilization, while a positive one destabilization. The alternation of $\alpha$ values will result again in the loss of conjugacy. The eigenvalues of the chains and rings are plotted in Figures \ref{fig:chain_alternating_alpha_val} and \ref{fig:ring_alternating_alpha_val}, while eigenvectors in Figures \ref{fig:chain_alternating_alpha_vec} and \ref{fig:ring_alternating_alpha_vec}.
 
-\begin{figure}[h]
+\begin{figure}[ht]
     \centering
     \begin{minipage}{0.47\textwidth}
         \centering
@@ -412,6 +415,6 @@ Due to the nature of the Hamiltonian, a change in either bond distances or bond 
 
 The wave function is also modified by these changes. Different atomic distances results in a wave function localization within the chain or ring structure, and thus a loss of degeneracy in the ring, whereas a change in atom types results in localization on certain atoms, maintaining degenerate states in the ring system. 
 
-% \printbibliography
+\printbibliography
 
 \end{document}
