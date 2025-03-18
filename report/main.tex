@@ -18,6 +18,7 @@ sorting=none
 \usepackage[T1]{fontenc}
 
 \usepackage{listings}
+\usepackage{hyperref}
 \lstset{
     backgroundcolor=\color{LightGray},
     basicstyle=\ttfamily,
@@ -110,6 +111,10 @@ Where  $\beta^+$ corresponds to a longer bond distance and $\beta^-$ to a shorte
 
 \section{Program review}
 The initial intent was to write the program in FORTRAN, but due to problems with (probably) my compiler errors arose. When calling a matrix diagonalization using  lapack, the eigenvalues and eigenvectors were mismatched, rendering it impossible to order and plot the different states with the correct energies. Due to this, the program was rewritten in python, while maintaining the core functionality. While the code is written with a class structure, for clarity the code shown here is a simplification. 
+
+All code can be found in the following GitHub Repository:  
+
+\href{https://github.com/matarabadanf/Huckel-HW}{https://github.com/matarabadanf/Huckel-HW}.
 
 \subsection{Code analysis}
 The code is divided in two main parts: a class \texttt{Chain} that handles all the properties related to the Hückel Hamiltonian and a function \texttt{run\_calculation} that handles the general flow of a calculation. The advantage of working with a class is that it is possible to create various instances of these chains or rings and compare results and plot them easily and directly. 
