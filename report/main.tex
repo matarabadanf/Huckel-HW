@@ -1,4 +1,4 @@
-\documentclass{article}
+\documentclass[twocolumn]{article}
 \usepackage{graphicx} % Required for inserting images
 \usepackage{listings} % Replacing minted with listings
 \usepackage[margin=25mm]{geometry}
@@ -105,7 +105,7 @@ Where $\alpha$ corresponds to the first atom type and $\alpha'$ to the second. S
 Where  $\beta^+$ corresponds to a longer bond distance and $\beta^-$ to a shorter one. 
 
 \section{Program review}
-The initial intent was to write the program in FORTRAN, but due to problems with (probably) my compiler errors arose. When calling a matrix diagonalization using Llapack, the eigenvalues and eigenvectors were mismatched, rendering it impossible to order and plot the different states with the correct energies. Due to this, the program was rewritten in python, while maintaining the core functionality. While the code is written with a class structure, for clarity the code shown here is a simplification. 
+The initial intent was to write the program in FORTRAN, but due to problems with (probably) my compiler errors arose. When calling a matrix diagonalization using  lapack, the eigenvalues and eigenvectors were mismatched, rendering it impossible to order and plot the different states with the correct energies. Due to this, the program was rewritten in python, while maintaining the core functionality. While the code is written with a class structure, for clarity the code shown here is a simplification. 
 
 \subsection{Code analysis}
 The code is divided in two main parts: a class \texttt{Chain} that handles all the properties related to the Hückel Hamiltonian and a function \texttt{run\_calculation} that handles the general flow of a calculation. The advantage of working with a class is that it is possible to create various instances of these chains or rings and compare results and plot them easily and directly. 
@@ -414,8 +414,9 @@ Chains and rings were proven to exhibit different eigenvalues and eigenvector sp
 
 Due to the nature of the Hamiltonian, a change in either bond distances or bond types result in a loss of conjugacy and therefore the appearance of a gap in the band structure. A change in distances results in the modification of the eigenvalue spectrum generating a symmetric band gap centred around the zero energy level and breaking degeneracy in the ring. In contrast, the modification of atom types not only generates a band gap, but shifts the energy of the fermi level while maintaining the degeneracy in the ring. 
 
-The wave function is also modified by these changes. Different atomic distances results in a wave function localization within the chain or ring structure, and thus a loss of degeneracy in the ring, whereas a change in atom types results in localization on certain atoms, maintaining degenerate states in the ring system. 
+The wave function is also modified by these changes. Different atomic distances results in a wave function localization within the chain or ring structure, and thus a loss of degeneracy in the ring, whereas a change in atom types results in localization on certain atoms, maintaining degenerate states in the ring system.      
 
 \printbibliography
 
 \end{document}
+
