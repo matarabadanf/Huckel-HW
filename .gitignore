@@ -10,6 +10,7 @@
 *.xml
 *.gz
 *ML*
+.git*
 
 # Ignore .vscode folder
 .vscode/
